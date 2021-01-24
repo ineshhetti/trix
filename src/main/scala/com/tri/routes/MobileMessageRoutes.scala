@@ -3,18 +3,18 @@ package com.tri.routes
 import akka.actor.typed.scaladsl.AskPattern._
 import akka.actor.typed.{ActorRef, ActorSystem}
 import akka.http.scaladsl.model.StatusCodes
-import akka.http.scaladsl.server.Directives._
+import akka.http.scaladsl.server.Directives.{pathPrefix, _}
 import akka.http.scaladsl.server.Route
 import akka.util.Timeout
-import com.tri.util.JsonFormats
 import com.tri.models._
-import scala.concurrent.Future
+import com.tri.util.JsonFormats
 
 import scala.concurrent.Future
 
-class MobileMessageRoutes( mobileMessageRegistry: ActorRef[MobileMessageCommand])(implicit val system: ActorSystem[_]) {
+class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand], pushMessageRegistry: ActorRef[PushMessageCommand])(implicit val system: ActorSystem[_]) {
 
   //#message-routes-class
+
   import JsonFormats._
   import akka.http.scaladsl.marshallers.sprayjson.SprayJsonSupport._
   //#import-json-formats
@@ -24,12 +24,18 @@ class MobileMessageRoutes( mobileMessageRegistry: ActorRef[MobileMessageCommand]
 
   def getMobileMessages(): Future[MobileMessages] =
     mobileMessageRegistry.ask(GetMobileMessages)
+
   def getMobileMessage(id: String): Future[GetMobileMessageResponse] =
     mobileMessageRegistry.ask(GetMobileMessage(id, _))
+
   def createMobileMessage(mobileMessage: MobileMessage): Future[MobileMessageActionPerformed] =
     mobileMessageRegistry.ask(CreateMobileMessage(mobileMessage, _))
-  def deleteMobileMessage(id: String): Future[MobileMessageActionPerformed] =
-    mobileMessageRegistry.ask(DeleteMobileMessage(id, _))
+
+  def getPushMessages(): Future[PushMessages] =
+    pushMessageRegistry.ask(GetPushMessages)
+
+  def createPushMessage(pushMessage: PushMessage): Future[PushMessageActionPerformed] =
+    pushMessageRegistry.ask(CreatePushMessage(pushMessage, _))
 
   val messageRoutes: Route =
     pathPrefix("messages") {
@@ -48,29 +54,32 @@ class MobileMessageRoutes( mobileMessageRegistry: ActorRef[MobileMessageCommand]
               }
             })
         },
-        //#Messages-get-delete
-        //#Messages-get-post
-        path(Segment) { id  =>
+        path(Segment) { id =>
           concat(
             get {
-              //#retrieve-Message-info
               rejectEmptyResponse {
                 onSuccess(getMobileMessage(id)) { response =>
                   complete(response.maybeMobileMessage)
                 }
               }
-              //#retrieve-Message-info
-            },
-            delete {
-              //#Messages-delete-logic
-              onSuccess(deleteMobileMessage(id)) { performed =>
-                complete((StatusCodes.OK, performed))
-              }
-              //#Messages-delete-logic
             })
         })
-      //#Messages-get-delete
+    } ~ path("push") {
+    pathEnd {
+      concat(
+        get {
+          complete(getPushMessages())
+        }
+        ,
+        post {
+          entity(as[PushMessage]) { message =>
+            onSuccess(createPushMessage(message)) { performed =>
+              complete((StatusCodes.Created, performed))
+            }
+          }
+        })
     }
 
-  //#all-routes
+  }
+
 }

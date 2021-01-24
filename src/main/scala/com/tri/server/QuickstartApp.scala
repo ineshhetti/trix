@@ -5,7 +5,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import com.tri.routes.MobileMessageRoutes
-import com.tri.service.{MessageRegistry, MobileMessageConsumerRegistry}
+import com.tri.service.{MessageRegistry, MobileMessageConsumerRegistry, PushMessageRegistry}
 
 import scala.util.{Failure, Success}
 
@@ -15,7 +15,7 @@ object QuickstartApp {
   private def startHttpServer(routes: Route)(implicit system: ActorSystem[_]): Unit = {
     // Akka HTTP still needs a classic ActorSystem to start
     import system.executionContext
-
+    //Http().bindAndHandle(MainRouter.routes, config.getString("http.interface"), config.getInt("http.port"))
     val futureBinding = Http().newServerAt("localhost", 8080).bind(routes)
     futureBinding.onComplete {
       case Success(binding) =>
@@ -30,10 +30,12 @@ object QuickstartApp {
   def main(args: Array[String]): Unit = {
     //#server-bootstrapping
     val rootBehavior = Behaviors.setup[Nothing] { context =>
-      val registryActor = context.spawn(MobileMessageConsumerRegistry(), "MessageRegistryActor")
-      context.watch(registryActor)
+      val mobileActor = context.spawn(MobileMessageConsumerRegistry(), "MobileRegistryActor")
+      context.watch(mobileActor)
+      val pushActor = context.spawn(PushMessageRegistry(), "PushRegistryActor")
+      context.watch(pushActor)
 
-      val routes = new MobileMessageRoutes(registryActor)(context.system)
+      val routes = new MobileMessageRoutes(mobileActor,pushActor)(context.system)
       startHttpServer(routes.messageRoutes)(context.system)
 
       Behaviors.empty
