@@ -18,7 +18,7 @@ object JsonFormats  {
 
   implicit val messageActionPerformedJsonFormat = jsonFormat1(MessageActionPerformed)
 
-  implicit val mobileMessageJsonFormat = jsonFormat2(MobileMessage)
+  implicit val mobileMessageJsonFormat = jsonFormat3(MobileMessage)
   implicit val mobileMessagesJsonFormat = jsonFormat1(MobileMessages)
 
   implicit val mobileMessageActionPerformedJsonFormat = jsonFormat1(MobileMessageActionPerformed)

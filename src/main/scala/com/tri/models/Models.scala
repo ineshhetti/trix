@@ -6,7 +6,7 @@ import scala.collection.immutable
 
 case class Models()
 //push
-final case class PushMessage(messageId: String,clientId: String,message: String)
+final case class PushMessage(messageId: String,clientId: Int,message: String)
 final case class PushMessages(pushMessages: immutable.Seq[PushMessage])
 sealed trait PushMessageCommand
 final case class GetPushMessages(replyTo: ActorRef[PushMessages]) extends PushMessageCommand
@@ -16,12 +16,12 @@ final case class DeletePushMessage(id: String, replyTo: ActorRef[PushMessageActi
 final case class GetPushMessageResponse(maybePushMessage: Option[PushMessage])
 final case class PushMessageActionPerformed(description: String)
 //Mobile
-final case class MobileMessage(action: String,clientId: String)
+final case class MobileMessage(id:Int,action: String,clientId: Int)
 final case class MobileMessages(mobileMessages: immutable.Seq[MobileMessage])
 sealed trait MobileMessageCommand
 final case class GetMobileMessages(replyTo: ActorRef[MobileMessages]) extends MobileMessageCommand
 final case class CreateMobileMessage(mobileMessage: MobileMessage, replyTo: ActorRef[MobileMessageActionPerformed]) extends MobileMessageCommand
-final case class GetMobileMessage(id: String, replyTo: ActorRef[GetMobileMessageResponse]) extends MobileMessageCommand
+final case class GetMobileMessage(id: Int, replyTo: ActorRef[GetMobileMessageResponse]) extends MobileMessageCommand
 final case class GetMobileMessageResponse(maybeMobileMessage: Option[MobileMessage])
 final case class MobileMessageActionPerformed(description: String)
 
@@ -38,12 +38,12 @@ final case class GetMessageResponse(maybeMessage: Option[Message])
 final case class MessageActionPerformed(description: String)
 
 //User
-final case class User(name: String, id: Int, token: String)
+final case class User(name: String, clientId: Int, token: String)
 final case class Users(users: immutable.Seq[User])
 sealed trait Command
 final case class GetUsers(replyTo: ActorRef[Users]) extends Command
 final case class CreateUser(user: User, replyTo: ActorRef[ActionPerformed]) extends Command
-final case class GetUser(name: String, replyTo: ActorRef[GetUserResponse]) extends Command
-final case class DeleteUser(name: String, replyTo: ActorRef[ActionPerformed]) extends Command
+final case class GetUser(clientId: Int, replyTo: ActorRef[GetUserResponse]) extends Command
+final case class DeleteUser(clientId: Int, replyTo: ActorRef[ActionPerformed]) extends Command
 final case class GetUserResponse(maybeUser: Option[User])
 final case class ActionPerformed(description: String)

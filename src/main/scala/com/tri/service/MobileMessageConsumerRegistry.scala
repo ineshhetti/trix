@@ -18,7 +18,7 @@ object MobileMessageConsumerRegistry {
         replyTo ! MobileMessageActionPerformed(s"MobileMessage ID : ${mobileMessage.clientId} Action: ${mobileMessage.action} created.")
         registry(mobileMessages.filterNot(_.clientId == mobileMessage.clientId) + mobileMessage)
       case GetMobileMessage(id, replyTo) =>
-        replyTo ! GetMobileMessageResponse(mobileMessages.find(_.clientId == id))
+        replyTo ! GetMobileMessageResponse(mobileMessages.find(_.id == id))
         Behaviors.same
     }
 }

@@ -22,12 +22,12 @@ class   UserRoutes(userRegistry: ActorRef[Command])(implicit val system: ActorSy
 
   def getUsers(): Future[Users] =
     userRegistry.ask(GetUsers)
-  def getUser(name: String): Future[GetUserResponse] =
-    userRegistry.ask(GetUser(name, _))
+  def getUser(clientId: Int): Future[GetUserResponse] =
+    userRegistry.ask(GetUser(clientId, _))
   def createUser(user: User): Future[ActionPerformed] =
     userRegistry.ask(CreateUser(user, _))
-  def deleteUser(name: String): Future[ActionPerformed] =
-    userRegistry.ask(DeleteUser(name, _))
+  def deleteUser(clientId: Int): Future[ActionPerformed] =
+    userRegistry.ask(DeleteUser(clientId, _))
 
   //#all-routes
   //#users-get-post
@@ -51,12 +51,12 @@ class   UserRoutes(userRegistry: ActorRef[Command])(implicit val system: ActorSy
         },
         //#users-get-delete
         //#users-get-post
-        path(Segment) { name =>
+        path(Segment) { clientId =>
           concat(
             get {
               //#retrieve-user-info
               rejectEmptyResponse {
-                onSuccess(getUser(name)) { response =>
+                onSuccess(getUser(clientId.toInt)) { response =>
                   complete(response.maybeUser)
                 }
               }
@@ -64,7 +64,7 @@ class   UserRoutes(userRegistry: ActorRef[Command])(implicit val system: ActorSy
             },
             delete {
               //#users-delete-logic
-              onSuccess(deleteUser(name)) { performed =>
+              onSuccess(deleteUser(clientId.toInt)) { performed =>
                 complete((StatusCodes.OK, performed))
               }
               //#users-delete-logic

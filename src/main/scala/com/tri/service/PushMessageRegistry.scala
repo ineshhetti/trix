@@ -5,7 +5,7 @@ import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import com.tri.models._
 import org.slf4j.Logger
-object PushMessageRegistry extends {
+object PushMessageRegistry {
 
   def apply(): Behavior[PushMessageCommand] = registry(Set.empty)
 

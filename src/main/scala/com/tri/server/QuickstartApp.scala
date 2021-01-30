@@ -5,7 +5,7 @@ import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
 import com.tri.routes.MobileMessageRoutes
-import com.tri.service.{MessageRegistry, MobileMessageConsumerRegistry, PushMessageRegistry}
+import com.tri.service.{MessageRegistry, MobileMessageConsumerRegistry, PushMessageRegistry, UserRegistry}
 
 import scala.util.{Failure, Success}
 
@@ -31,11 +31,13 @@ object QuickstartApp {
     //#server-bootstrapping
     val rootBehavior = Behaviors.setup[Nothing] { context =>
       val mobileActor = context.spawn(MobileMessageConsumerRegistry(), "MobileRegistryActor")
-      context.watch(mobileActor)
       val pushActor = context.spawn(PushMessageRegistry(), "PushRegistryActor")
+      val userActor = context.spawn(UserRegistry(), "UserRegistryActor")
+      context.watch(mobileActor)
       context.watch(pushActor)
+      context.watch(userActor)
 
-      val routes = new MobileMessageRoutes(mobileActor,pushActor)(context.system)
+      val routes = new MobileMessageRoutes(mobileActor,pushActor,userActor)(context.system)
       startHttpServer(routes.messageRoutes)(context.system)
 
       Behaviors.empty

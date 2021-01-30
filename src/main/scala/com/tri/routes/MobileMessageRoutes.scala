@@ -11,7 +11,7 @@ import com.tri.util.JsonFormats
 
 import scala.concurrent.Future
 
-class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand], pushMessageRegistry: ActorRef[PushMessageCommand])(implicit val system: ActorSystem[_]) {
+class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand], pushMessageRegistry: ActorRef[PushMessageCommand], userRegistry: ActorRef[Command])(implicit val system: ActorSystem[_]) {
 
   //#message-routes-class
 
@@ -25,7 +25,7 @@ class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand],
   def getMobileMessages(): Future[MobileMessages] =
     mobileMessageRegistry.ask(GetMobileMessages)
 
-  def getMobileMessage(id: String): Future[GetMobileMessageResponse] =
+  def getMobileMessage(id: Int): Future[GetMobileMessageResponse] =
     mobileMessageRegistry.ask(GetMobileMessage(id, _))
 
   def createMobileMessage(mobileMessage: MobileMessage): Future[MobileMessageActionPerformed] =
@@ -36,6 +36,18 @@ class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand],
 
   def createPushMessage(pushMessage: PushMessage): Future[PushMessageActionPerformed] =
     pushMessageRegistry.ask(CreatePushMessage(pushMessage, _))
+
+  def getUsers(): Future[Users] =
+    userRegistry.ask(GetUsers)
+
+  def getUser(id: Int): Future[GetUserResponse] =
+    userRegistry.ask(GetUser(id, _))
+
+  def createUser(user: User): Future[ActionPerformed] =
+    userRegistry.ask(CreateUser(user, _))
+
+  def deleteUser(clientId: Int): Future[ActionPerformed] =
+    userRegistry.ask(DeleteUser(clientId, _))
 
   val messageRoutes: Route =
     pathPrefix("messages") {
@@ -58,28 +70,62 @@ class MobileMessageRoutes(mobileMessageRegistry: ActorRef[MobileMessageCommand],
           concat(
             get {
               rejectEmptyResponse {
-                onSuccess(getMobileMessage(id)) { response =>
+                onSuccess(getMobileMessage(id.toInt)) { response =>
                   complete(response.maybeMobileMessage)
                 }
               }
             })
         })
     } ~ path("push") {
-    pathEnd {
-      concat(
-        get {
-          complete(getPushMessages())
-        }
-        ,
-        post {
-          entity(as[PushMessage]) { message =>
-            onSuccess(createPushMessage(message)) { performed =>
-              complete((StatusCodes.Created, performed))
-            }
+      pathEnd {
+        concat(
+          get {
+            complete(getPushMessages())
           }
-        })
+          ,
+          post {
+            entity(as[PushMessage]) { message =>
+              onSuccess(createPushMessage(message)) { performed =>
+                complete((StatusCodes.Created, performed))
+              }
+            }
+          })
+      }
+    } ~ path("users") {
+      //pathEnd {
+        concat(
+          pathEnd {
+            concat(
+              get {
+                complete(getUsers())
+              },
+              post {
+                entity(as[User]) { user =>
+                  onSuccess(createUser(user)) { performed =>
+                    complete((StatusCodes.Created, performed))
+                  }
+                }
+              })
+          },
+          path(Segment) { clientId =>
+
+              concat(
+                get {
+                  rejectEmptyResponse {
+                    onSuccess(getUser(clientId.toInt)) { response =>
+                      complete(response.maybeUser)
+                    }
+                  }
+                },
+                delete {
+                  onSuccess(deleteUser(clientId.toInt)) { performed =>
+                    complete((StatusCodes.OK, performed))
+                  }
+                }
+              )
+
+          }
+        )
+    //  }
     }
-
-  }
-
 }

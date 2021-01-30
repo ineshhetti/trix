@@ -16,11 +16,11 @@ object UserRegistry {
       case CreateUser(user, replyTo) =>
         replyTo ! ActionPerformed(s"User ${user.name} created.")
         registry(users + user)
-      case GetUser(name, replyTo) =>
-        replyTo ! GetUserResponse(users.find(_.name == name))
+      case GetUser(clientId, replyTo) =>
+        replyTo ! GetUserResponse(users.find(_.clientId == clientId))
         Behaviors.same
-      case DeleteUser(name, replyTo) =>
-        replyTo ! ActionPerformed(s"User $name deleted.")
-        registry(users.filterNot(_.name == name))
+      case DeleteUser(clientId, replyTo) =>
+        replyTo ! ActionPerformed(s"User $clientId deleted.")
+        registry(users.filterNot(_.clientId == clientId))
     }
 }
