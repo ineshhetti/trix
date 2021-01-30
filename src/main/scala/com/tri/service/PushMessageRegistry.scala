@@ -15,7 +15,6 @@ object PushMessageRegistry extends {
         replyTo ! PushMessages(pushMessages.toSeq)
         Behaviors.same
       case CreatePushMessage(pushMessage, replyTo) =>
-        system.log.err
         replyTo ! PushMessageActionPerformed(s"PushMessage ClientId : ${pushMessage.clientId} Message: ${pushMessage.message} Message: ${pushMessage.messageId} created.")
         MobilePushService.send(pushMessage.message)
         registry(pushMessages + pushMessage)
