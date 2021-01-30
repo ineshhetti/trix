@@ -38,7 +38,7 @@ final case class GetMessageResponse(maybeMessage: Option[Message])
 final case class MessageActionPerformed(description: String)
 
 //User
-final case class User(name: String, age: Int, countryOfResidence: String)
+final case class User(name: String, id: Int, token: String)
 final case class Users(users: immutable.Seq[User])
 sealed trait Command
 final case class GetUsers(replyTo: ActorRef[Users]) extends Command
