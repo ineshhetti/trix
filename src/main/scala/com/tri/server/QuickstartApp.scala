@@ -1,11 +1,14 @@
 package com.tri.server
 
+import java.util.concurrent.ConcurrentHashMap
+
 import akka.actor.typed.ActorSystem
 import akka.actor.typed.scaladsl.Behaviors
 import akka.http.scaladsl.Http
 import akka.http.scaladsl.server.Route
+import com.tri.models.{Coordinator, User}
 import com.tri.routes.MobileMessageRoutes
-import com.tri.service.{MessageRegistry, MobileMessageConsumerRegistry, PushMessageRegistry, UserRegistry}
+import com.tri.service.{ClientCoordinatorRegistry, MessageRegistry, MobileMessageConsumerRegistry, PushMessageRegistry, UserRegistry}
 
 import scala.util.{Failure, Success}
 
@@ -29,15 +32,19 @@ object QuickstartApp {
   //#start-http-server
   def main(args: Array[String]): Unit = {
     //#server-bootstrapping
+    val users : ConcurrentHashMap[Int,User] = new ConcurrentHashMap[Int,User]()
+    val coordinator: ConcurrentHashMap[Int, List[Coordinator]] = new ConcurrentHashMap[Int, List[Coordinator]]()
     val rootBehavior = Behaviors.setup[Nothing] { context =>
       val mobileActor = context.spawn(MobileMessageConsumerRegistry(), "MobileRegistryActor")
-      val pushActor = context.spawn(PushMessageRegistry(), "PushRegistryActor")
-      val userActor = context.spawn(UserRegistry(), "UserRegistryActor")
+      val pushActor = context.spawn(PushMessageRegistry(users,coordinator), "PushRegistryActor")
+      val userActor = context.spawn(UserRegistry(users), "UserRegistryActor")
+      val coordinatorActor = context.spawn(ClientCoordinatorRegistry(coordinator), "CoordinatorRegistryActor")
       context.watch(mobileActor)
       context.watch(pushActor)
       context.watch(userActor)
+      context.watch(coordinatorActor)
 
-      val routes = new MobileMessageRoutes(mobileActor,pushActor,userActor)(context.system)
+      val routes = new MobileMessageRoutes(mobileActor,pushActor,userActor,coordinatorActor)(context.system)
       startHttpServer(routes.messageRoutes)(context.system)
 
       Behaviors.empty

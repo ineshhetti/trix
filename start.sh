@@ -1,0 +1,1 @@
+setsid nohup sbt run &

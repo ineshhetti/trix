@@ -2,6 +2,8 @@ package com.example
 
 //#user-routes-spec
 //#test-top
+import java.util.concurrent.ConcurrentHashMap
+
 import akka.actor.testkit.typed.scaladsl.ActorTestKit
 import akka.http.scaladsl.marshalling.Marshal
 import akka.http.scaladsl.model._
@@ -27,7 +29,7 @@ class UserRoutesSpec extends WordSpec with Matchers with ScalaFutures with Scala
   // We use the real UserRegistryActor to test it while we hit the Routes,
   // but we could "mock" it by implementing it in-place or by using a TestProbe
   // created with testKit.createTestProbe()
-  val userRegistry = testKit.spawn(UserRegistry())
+  val userRegistry = testKit.spawn(UserRegistry(new ConcurrentHashMap[Int,User]()))
   lazy val routes = new UserRoutes(userRegistry).userRoutes
 
   // use the json formats to marshal and unmarshall objects in the test

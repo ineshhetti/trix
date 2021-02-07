@@ -27,4 +27,9 @@ object JsonFormats  {
   implicit val pushMessagesJsonFormat = jsonFormat1(PushMessages)
 
   implicit val pushMessageActionPerformedJsonFormat = jsonFormat1(PushMessageActionPerformed)
+
+  implicit val CoordinatorMessageJsonFormat = jsonFormat2(Coordinator)
+  implicit val CoordinatorMessagesJsonFormat = jsonFormat1(Coordinators)
+
+  implicit val CoordinatorMessageActionPerformedJsonFormat = jsonFormat1(CoordinatorActionPerformed)
 }

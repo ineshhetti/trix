@@ -22,5 +22,8 @@ object MessageRegistry {
       case DeleteMessage(id, replyTo) =>
         replyTo ! MessageActionPerformed(s"Message $id deleted.")
         registry(messages.filterNot(_.id == id))
+      case DeleteMessages(replyTo) =>
+        replyTo ! MessageActionPerformed(s"All Messagea are deleted.")
+        registry(Set.empty[Message])
     }
 }

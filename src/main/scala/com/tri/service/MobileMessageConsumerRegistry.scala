@@ -3,6 +3,7 @@ package com.tri.service
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import com.tri.models._
+import com.tri.service.UserRegistry.registry
 
 
 object MobileMessageConsumerRegistry {
@@ -20,5 +21,8 @@ object MobileMessageConsumerRegistry {
       case GetMobileMessage(id, replyTo) =>
         replyTo ! GetMobileMessageResponse(mobileMessages.find(_.id == id))
         Behaviors.same
+      case DeleteMobileMessage(id, replyTo) =>
+        replyTo ! MobileMessageActionPerformed(s"MobileMessage $id deleted.")
+        registry(mobileMessages.filterNot(_.clientId == id))
     }
 }

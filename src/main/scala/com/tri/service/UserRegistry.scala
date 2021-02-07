@@ -1,26 +1,33 @@
 package com.tri.service
 
+import java.util.concurrent.ConcurrentHashMap
+
 import akka.actor.typed.Behavior
 import akka.actor.typed.scaladsl.Behaviors
 import com.tri.models._
-
+import scala.jdk.CollectionConverters._
 object UserRegistry {
 
-  def apply(): Behavior[Command] = registry(Set.empty)
+  def apply( users : ConcurrentHashMap[Int,User]): Behavior[Command] = registry(users)
 
-  private def registry(users: Set[User]): Behavior[Command] =
+  //
+
+  private def registry(users : ConcurrentHashMap[Int,User]): Behavior[Command] =
     Behaviors.receiveMessage {
       case GetUsers(replyTo) =>
-        replyTo ! Users(users.toSeq)
+        replyTo ! Users(users.values().asScala.toSeq)
         Behaviors.same
       case CreateUser(user, replyTo) =>
         replyTo ! ActionPerformed(s"User ${user.name} created.")
-        registry(users + user)
+        users.put(user.clientId,user)
+        Behaviors.same
       case GetUser(clientId, replyTo) =>
-        replyTo ! GetUserResponse(users.find(_.clientId == clientId))
+        val user = users.asScala.toMap.get(clientId)
+        replyTo ! GetUserResponse(user)
         Behaviors.same
       case DeleteUser(clientId, replyTo) =>
         replyTo ! ActionPerformed(s"User $clientId deleted.")
-        registry(users.filterNot(_.clientId == clientId))
+        users.remove(clientId)
+        Behaviors.same
     }
 }
