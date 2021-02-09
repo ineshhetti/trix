@@ -3,8 +3,35 @@ package com.tri.util
 import akka.stream.alpakka.google.firebase.fcm.FcmSettings
 
 object Settings {
-  val privateKey =
-    """-----BEGIN PRIVATE KEY-----MIIEuwIBADANBgkqhkiG9w0BAQEFAASCBKUwggShAgEAAoIBAQCdnDnRU1ORemdAiOYMEfCQLcHioxR3RroTqJ46bXeh0OsYMeYCaLNjkmZ8GKIF8YUBz7b9edWgnJ0ju97B7OeVIDLX5lezEXLNB/TZvkrOGemUDh3oK9YmTY8CsVVgl9iSVPW6pgnuDlJSqXjz+Ph2wzilDWMwubP/Kq6peQbGxIZv+RZ/8M1GkYOWrpkLaMmbdZ2G3pJc8rCN4Yk8eAU4cWFlWkfwAyDUVn6jDUxh6tFHbX/KVIg4uLGASbgcDFdRAfhbBZbcGP8yBunrnMVTljZ+jU5kvyjeRA78YqmE5I2KBB9prhwUDW23s4jvOEo9yuQ7T02AvKvo+jjjaau5AgMBAAECggEABIqqbdpBV7lXvVfUjTd9H6J56k55ugArP4LF4HgkEOEkzSMu9hXPSYi/9EZ/cL1ncEhshPxcSA8LRirVPfBWMgll/auxDkNr8/WNPDMME8lSXkZT3UtaFet5OgIjLC/j+T+Cfzjmo1n9TE1+40Ti4AU7HiJ3H8HSKoGv28lVhSe7+9QFbcXz83nr245Htsa970zpsIvh930ca5R8cAjIE6x+e3Ex2OlLtTsl67oPJKFFg56QpTaj1JxJdmw/+g9UJAisB8+dFCCOLLyRTgh8J9VyfbAGpa2ft3rmqUhYVLubEh2AWqjW3RQ2GoRW8LsNR0lRWrpNTJY0CuOruuO6KQKBgQDakomtF61glePN5pejAof72oeLaLGAtbnvGxP67qjeVcyf3ryYOunjtOe48+1ouzEncBpfeYTeHBEeURJQH3E+qxMYUmDmscTCVIBOiAH2FrWpE+ujkzmZw8CCNGs8mfm48f53YHAfbrIMqkv95gNr535yGvQUrdrPnbBOzpjQXQKBgQC4mVElysMFeQywrOKqyu82Qzig7ttTe9Uzfnk8oL2VCB2Vi8+ZmOIeWP8NaS4BPrJS5VgbIHJCccTHEw86IFoAZuyhNItamJY2lxIoWuPIE+zGvS8CFvVFwMJLNtn+fuL+p4ib4cTLpy1Dzw5IzoLhaLirU04AYRThXWyrLK4DDQKBgQDMFowrbbJcP1lIxwnMEe77gd+Skp07e3Q0CWqsofBYOnEozgf3dPszvZWpI0sIwdFx68EUaRlhc3+geT7KRbGuPHtF+JW2k0MP2Ws86M48BJR3XbxnLm9YXmoAqgV/vp5ozL04pnnLP8dNAC6Y0w9az/tHfFdwf62SssEPtOUHmQKBgDRNtJFZrwI49yCEC8FKuJaOW1g19UzlNFZfymgkPzMf1ooN0Cd8Cu2AV9vr5k4R/qLAOsOM4PL0m0Wwn8rfacDdaMSQR7/GpiEXktx+TDXfd2IkLlKQQLSf1i1LgF68gwKWY32PbZwqZQfmfeyhHrJRYqmgc+RlnW3xc53YjgFtAn9YzzS93Ez687NEiDH/DInKiKQyC22/u9uNOo4j7HnCu7T/vzBFYsQo+OLs2uYwL2OC8nG43g/Tp1WPjzogjejTPEND9lJLA5UzlShiJn08IHmH4+spfeLPH6dg66o5X+4hvaFpxc0OLZ8cDXuoOwAPs0fLjfAQBSuItKDap0R9-----END PRIVATE KEY-----""".stripMargin
+  val privateKey ="""-----BEGIN PRIVATE KEY-----
+    |MIIEvAIBADANBgkqhkiG9w0BAQEFAASCBKYwggSiAgEAAoIBAQCQdGfUSZee0vhJ
+    |YL+qf6Nci03hxzYsvkTAmAj+kg79TVii7fdWc2gh9WQSyBE6841mQfEYrjtlc3Or
+    |FefwD1qrhvrTKyPi1BzEomaukoCH2QlahdDfInCaz9hthRev+FyuEHwdo5pPcj8q
+    |6eVG6mPDL4dF+fIKNehxVDZr/SjRAvAkntsh4ZOc5UZvkSqxHur313RrB+59FFhb
+    |arxiERMorZc9UB/fApkjgIij4An/3REri+ZhBdx3xYQJGCtt0jQWsaPDS12EZj29
+    |z2V0bej4+2dwp1DGajYm7O4+4vfMMMCE4VHYnF7r8XKcH5sEmTjq8QKwZfXkDCwO
+    |+1Rtx24JAgMBAAECggEACSXsEOY/tUHWUjxPqw4mA/V4/05IxKTgkQNX13pbu2gn
+    |b7sLBcUtgDAMkEFuEOoNZ39P09Ct54b8GWa732izhOcZkZ+66DGnaD8CKnZR8Dh7
+    |FongsE7bq3wz8DykY0Mi6G2YFJ7wpe0d6btyBw+PNZRYGGMDtGiVUb8D6ssXp4PU
+    |GwpYBC0MvxdF27+j3pKLWQFvJGCE9+8lv6GXb8A4sNLqG97/3hceAMGiWIWfZHi2
+    |B5kE1WfSd5bxuUf3l+THtf+dEvxtFJWgDYhejvagoQ9d76O4X/wKitJ1PpqoaoAx
+    |Nq1BAMhvUyC9fouEonCT6MkjUSaiq7S9SPbNnjYksQKBgQDKKRZY2RFXiI21GE6X
+    |qT95a9ie9hhdrS/MXTThUtCVjbflvs4SJrID/r2zLCHl4FkZAeG70f7PUTAw3JGv
+    |XfUpYjxZBs9QNfxSWMgmC7UqvRIC6+Rho5z4BNMlwpHLIitM6rzNgJflTuhbHgWd
+    |LezBPPFeYJgyzI5wG5R7n4S2sQKBgQC27QyKq/4fX6VX1la6pdX+7rTcfBK5y1wY
+    |yUZQDDJYm/aZfYOyUYA7trSoA7b15RzKyPAb9dkhP7Fot7Rv52iM63kig5VsBlmI
+    |4UwruE9LHiCstVNj+nG8rjmTX9GV8bIjTxwITPr6KyUaV9nJKlqwBLgrj4vlyCLa
+    |8NQt7roy2QKBgFmOtCiuGQGnK+fjGcYUI1t+DFv3d7ngJEGrtOZxEph+TM6Jpa7i
+    |14/vhUhfr7Cvn6j1bXQQRoq/U9MBk8SVoiswKr3hx2uoTtyIGjrIivyg/96tc+JR
+    |YhN5x7R9qqrLu1T61KNRaXkbaNIcza3hD3ZXsjH2JtayShOeFDxj4Z4xAoGAJF6B
+    |DdkgT1CO6SXeXIG4SFVhdCze9D2wc+Ugq62hHOj1YJMJ6hw2KKksxfLnH4CL9u14
+    |f7ajku688RsFLvKNYOc4UFplDPM+Pe69XDvq1/6HdI8go1IZ5u+k1t5IJ03EoyyJ
+    |YEUd6TtGxzQMQui+2xw1GcQShn8CHxGevfsm3hECgYAO6QLmCQqFFX/Azeka1JJg
+    |tlplZ05D0AZ3AgRHUwsyibYCanpwct82okVfhaoR+rYLLp+E8zkuyb1jJ4bcyZNr
+    |8XZmxpeXgMNC7gEomCS4UE/+b2Swl+HsM5Ton8phaxTbuJUPPntm3U2an15tDgZK
+    |X1CmZdciuBIJmqW1rh7iaA==
+    |-----END PRIVATE KEY-----
+    |""".stripMargin
   val clientEmail = "firebase-adminsdk-qn12k@trix-bc458.iam.gserviceaccount.com"
   val projectId = "trix-bc458"
   val fcmConfig = FcmSettings(clientEmail, privateKey, projectId)
